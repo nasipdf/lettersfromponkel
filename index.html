@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy New Year</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --env-color: #e6b88a;
+            --env-dark: #c59b6d;
+            --seal-color: #a32a2a;
+            --overlay: rgba(0, 0, 0, 0.8);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column; /* Stack header and envelope */
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: url('bg.svg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* Centered Header Section */
+        .header-section {
+            margin-bottom: 40px; /* Space between text and envelope */
+            z-index: 10;
+        }
+
+        .header-section h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin: 0;
+            font-weight: 700;
+            color: #3e2723; /* Solid color, no gradient */
+        }
+
+        .header-section p {
+            font-size: 1.2rem;
+            margin-top: 15px;
+            font-weight: 400;
+            color: #3e2723;
+            opacity: 0.9;
+        }
+
+        /* Envelope Styling */
+        .envelope-wrapper {
+            position: relative;
+            width: 280px;
+            height: 180px;
+            background-color: var(--env-dark);
+            cursor: pointer;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.4);
+            transition: transform 0.2s;
+        }
+
+        .envelope-wrapper:active {
+            transform: scale(0.95);
+        }
+
+        /* Top Flap */
+        .envelope-wrapper::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 2;
+            border-top: 100px solid var(--env-color);
+            border-left: 140px solid transparent;
+            border-right: 140px solid transparent;
+        }
+
+        /* Front Pockets */
+        .envelope-wrapper::after {
+            content: "";
+            position: absolute;
+            bottom: 0; left: 0;
+            z-index: 1;
+            width: 0; height: 0;
+            border-top: 90px solid transparent;
+            border-left: 140px solid var(--env-color);
+            border-right: 140px solid var(--env-color);
+            border-bottom: 90px solid var(--env-color);
+        }
+
+        .seal {
+            position: absolute;
+            top: 75px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 50px;
+            height: 50px;
+            background: var(--seal-color);
+            border-radius: 50%;
+            z-index: 3;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        /* Modal / Popup Logic */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--overlay);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            backdrop-filter: blur(8px);
+        }
+
+        .letter-popup {
+            width: 85%;
+            max-width: 400px;
+            max-height: 75vh;
+            background: white;
+            border-radius: 20px;
+            padding: 35px 25px;
+            position: relative;
+            overflow-y: auto;
+            box-sizing: border-box;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            transform: scale(0.9);
+            opacity: 0;
+            transition: all 0.4s ease;
+        }
+
+        .modal-overlay.active .letter-popup {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .letter-popup h2 { font-weight: 700; color: #222; margin-top: 0; }
+        .letter-popup p { font-weight: 400; line-height: 1.7; color: #444; }
+
+        .close-btn {
+            display: block;
+            margin: 25px auto 0;
+            padding: 12px 30px;
+            background: #eee;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        /* Password Styling */
+        .password-container { text-align: center; color: white; }
+        input {
+            padding: 15px; border-radius: 12px; border: none;
+            width: 240px; font-family: 'Outfit', sans-serif;
+            font-size: 18px; margin-bottom: 20px; text-align: center;
+        }
+        .unlock-btn {
+            padding: 12px 40px; background: var(--env-color);
+            color: #3e2723; border: none; border-radius: 12px;
+            font-weight: 700; font-size: 16px; cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header-section">
+        <h1>wow udah 2026?</h1>
+        <p>maaf ya jelek. i still need <br> learn how to code</p>
+    </div>
+
+    <div class="envelope-wrapper" onclick="openPasswordScreen()">
+        <div class="seal">✉</div>
+    </div>
+
+    <div class="modal-overlay" id="modal-overlay">
+        <div id="password-ui" class="password-container">
+            <h2 style="font-weight: 700; margin-bottom: 25px;">Enter Code</h2>
+            <input type="password" id="pass-input" placeholder="••••••••">
+            <button class="unlock-btn" onclick="checkPassword()">Unlock</button>
+        </div>
+
+        <div class="letter-popup" id="letter-ui">
+            <h2 id="letter-title"></h2>
+            <hr style="border: 0; border-top: 1px solid #f0f0f0; margin: 20px 0;">
+            <p id="letter-text"></p>
+            <button class="close-btn" onclick="closeAll()">Close</button>
+        </div>
+    </div>
+
+    <script>
+        const secretData = {
+            "achamajenna": {
+                title: "to achak",
+                text: 
+                "Hi acha!! My bff… udah 2026.. Gak nyangka udah otw 2 tahun kita berkhalwat. Maksudku berdua. Aku sappy sekali setahun [gak sih], but i want to say thank you for everything. Maybe you didnt notice or remembered, but man iermm if u werent here id probably be worse. In the sense that i really enjoy and need ur company. Dulu kamu friend crush aku and i tried to win ur affection bcs well i wanted to be ur friend. Maaf ya kalo aku banyak salah dan keseringan jadi beban. Ive never felt so comfortable with an irl before i met u, ure weird funny but u can be serious at times. I remembered pas dulu aku gambar di cafe di klaten sm ur parents and tante nurul said smth abt my mom and u went defensive about it. Thanks for knowing my situation and thanks for keeping it in mind. And the other time where i tweeted out that i was alone in w17 u immediately rushed over and accompanied me. Honestly ure very sweet and im lucky to have met u.. Apa ya… i was really sad lowk in w17 i was going #thru it but with ur company, kamu sering main ke kamarku, sering tidur sama aku, aku sering ke kamar mu, just seeking ur company, and u were happy to oblige and give it made my days in rushd. I think ill cry a lot when we part pas lulus, but thats for future azel. Im proud of how far uve come so far, dari krenova, opsi, ispo, everything, uve fought hard and im always happy to see u shine. Mau di podium ato di kelas, im just happy seeing u live and thrive :3 semoga kita bisa cuddle terus dan berteman ya, i hope you’ll grant me a space next to your side in the years to come. Love u so much acha!! My bff <3"
+            },
+
+            "udangkejumgh": {
+                title: "to my favorite gooner",
+                text: 
+                "Hi rara. My 2nd friend crush. Apa ya anjir GATAU GW NULIS APAAN iya deh ini aku gak proofread maaf ya. Anyways im glad to have met u. Ure so cute and nice and funny honestly all-in-one package. Ive always wanted to be close to u since kelas 10 maaf loser alert!! And we were close in 10th grade but never like bffs idk and then kelas 11 rolls around and somehow we’re close..? Anyways bro ure like my twin. In the sense of our worries and problems, i relate heavily to u. Im not good with expressing my words, but i hope u never forget that ure not alone. Whatever worries it is u can come to me if its too heavy to bear. Contrary to what u think, ure a very good friend. I honestly didnt expect for u to give me a gift during my birthday but u did.. Honestly it was so cute and sweet it made my day. Ure doing great rara, better than what u think. I know u probably dont feel like it but uve already made ur parents proud, and i think ull continue to do so despite ur tumbles sometimes. I hope u dont let ur thoughts eat u too much, u can always come to me acha telkomsel or anyone u trust. Trust me its better sharing grief than shouldering it on ur own. I hope we can be closer next year and be bffs my weird gooner <3 HONESTLY SMTH I RLLY LIKE ABOUT U IS HOW URE NOT SCARED TO SAY GOONER SHIT LIKE ur twt is genuinely unhinged and u dont hide that. Wtf. my idol. - love azel" 
+            },
+
+            "mymommy": {
+                title: "to my mommy",
+                text: 
+                "My mommy.. Happy new years!! Semoga mommy bahagia dan tidak diteror lord pian. Tbh dari semua orang di hidup ku aku cuman percaya najem untuk design. Dari design, skill, competency, ure genuinely so.. Sexy <3 im glad to have u as my leader during my first and last osis, maaf ya dulu aku beban. Makasih udah bantu ngubah aku, being ur partner was one of my favorite moments in rushd. Semoga kita bisa collab lagi!! Semoga mommy dan daddy bahagia selalu. I love u yay!!! Najem orangnya asik dan gampang berbaur, i like that <3 - love, azel"},
+
+            "gabutgakpams": {
+                title: "to pams my toilet buddy",
+                text: 
+                "ANJIR 2 TAHUN COK GW BOSEN SM ELU (jokes) hi pams. Maaf ya udah aku paksain kamu sebagai temanku… lowk sometimes i feel like im forcing u to be my friend and for that im sorry. I love u so much though LOL i still remember yaallah i wont get tired of repeating it but when i first came to know that theres someone from OZONE. THE SCHOOL MY SCHOOL HAD ONE-SIDED BEEF WITH. i wasl ike omg i need to be friends and low and behold shes my first roommate like?? Im crine. Anyways ur brother is so cool ur sister is cool too ure also cool. Ure so fun to ragebait wtf like ? also ure super kind and humble and easy to talk to. I feel comfortable coming to u with my problems and asking u for advice, thanks for becoming the shoulder i can lend on. I hope i can do the same too. Ure also very pretty and nice. Ig. ya i dont say it often but thanks for being my friend.. I hpe we can continue to be friends. I hope u can stay happy with hanif forever. And i hope the things that makes u cry will go away in the future. Nanti kalo kamu di uoft trs balik ke indo aku nititp oleh oleh ya - love, azel" },
+
+            "zeljalanyuk": {
+                title: "to parasit adek gw ajg",
+                text: 
+                "Being friends with u was not on my 2025 list. Ure so weird. I thought u were weird incel gooner grgr i saw u like a sus reel. I cant believe udah otw 1 tahun kita berteman i feel like udah lama… lowk ure my first guy friend that i feel comfortable with. Ure very funny ichel and very kind, kamu salah satu cowo rushd yg sangat baik. Semoga kamu jadi feminist gentleman ya. Makasih udah mengisi hari hariku dengan ketawa with ur weird ass jokes, im glad to have been ur friend. Gak nyangka kita awalnya bonding grgr sonic mpreg. I hope we can be friends and t4s selalu jaya. Maaf ya akhir akhir ini grup sepi, nanti jaya lagi kok1!!!! Makasih udah jadi temanku ichel"},
+
+            "absolutecinema": {
+                title: "to weird guy i know",
+                text: 
+                "ON OUR WAY TO 6 YEARS BABYYYY absolutely diabolical ive been ur friend for so long… honestly will always be something im forever grateful about. Maybe u dont want this but u have very much shaped the person who ive become today. Maybe u dont feel like all that radiating, but u are. Ive come to love and forgive myself because uve done that to me many times, i find myself giving the same love u gave me to my friends so.. Heh. ure basically spreading ur love to people in indonesia too. Lowk i was a very loner loser kid who basically had no friends, and it was getting very depressing. But all that changed when i met u, thanks for filling my days with ur company and allowing me to stay by your side. I hope we can grow old together. I know that sounds cringe and u prolly dont want to live that long but if i have to grow old u have to, ok ? sorry if i became nonchalant distant or dry text with my wording these days. I honestly just like the aura lowercases give off IJBOL and yeah. I hope we can continue to be friends. Thanks for putting up with my bs, i hope ure ready for rin bs for the next 50 years. Lets get a cat one day. Or live close. Cuz i think ill prolly die if i dont have a responsible friend around me. I hope ull continue to be happy and im always wishing and hoping and praying and manifesting for ur happiness. Wether that happiness comes from fanta, from seeing a cute cat reel, i hope u can allow urself to enjoy those feelings and moments. Dont restrict yourself to things, because ull only lose. Yk like. Its not a win-win situation for anyone. And i hope u can spend the rest of ur days living for urself. -love, rinnie"},
+            
+            "nasudahnas": {
+                title: "to nasywa",
+                text: 
+                "Hi nasywa happy 2026!!!! First of all thanks for being my friend. I learnt to accept vulnerability and lean on someone thanks to u. And in my eyes i havent been a good friend, ive got mad and treated u unfairly. I know words r flimsy, but i hope u can accept my apology. Im sorry sometimes (or most of the time) i dont know what to reply with, and usually people see it as rude and i hope i didnt come off like that to u. i  wont promise anything, but ill try to become a better friend for u next year. I hope i can be someone u rely on just the way i relyo n u, and thanks for sparing me ur time for my worries and deep talks. Ure a gift that life and universe has bestowed upon me, and i hope our friendship can last until i can see u with ur grandbabies. Or maybe even longer? I hope ull always continue to be happy and i hope u can learn to accept and love urself more. I wish nothing but the best for u, my president and friend!! My nasywa!! Thank u for filling my days with ur voice and company :333 i hope life will treat u fairly from 2026 and the next. -love, azel. Maaf ya ini agak pendek aku janji bakal lebih panjang nanti I NEED TO UPLOAD THE SITE BRUH IM CRINE"},
+            
+        };
+
+        const overlay = document.getElementById('modal-overlay');
+        const passUI = document.getElementById('password-ui');
+        const letterUI = document.getElementById('letter-ui');
+
+        function openPasswordScreen() {
+            overlay.style.display = 'flex';
+            passUI.style.display = 'block';
+            letterUI.style.display = 'none';
+        }
+
+        function checkPassword() {
+            const input = document.getElementById('pass-input').value;
+            const content = secretData[input];
+
+            if (content) {
+                document.getElementById('letter-title').innerText = content.title;
+                document.getElementById('letter-text').innerText = content.text;
+                passUI.style.display = 'none';
+                letterUI.style.display = 'block';
+                setTimeout(() => overlay.classList.add('active'), 10);
+            } else {
+                alert("Wrong password!");
+            }
+        }
+
+        function closeAll() {
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                document.getElementById('pass-input').value = '';
+            }, 300);
+        }
+    </script>
+</body>
+</html>
